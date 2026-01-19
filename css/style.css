@@ -140,26 +140,26 @@ body {
 }
 
 .hero-slideshow .slide:nth-child(1) {
-  background-image: url("D:/tbc_new/assets/images/v1.png");
+  background-image: url("assets/images/v1.png");
   animation-delay: 0s;
 }
 
 .hero-slideshow .slide:nth-child(2) {
-  background-image: url("D:/tbc_new/assets/images/v2.png");
+  background-image: url("assets/images/v2.png");
   animation-delay: 5s;
 }
 
 .hero-slideshow .slide:nth-child(3) {
-  background-image: url("D:/tbc_new/assets/images/v3.png");
+  background-image: url("assets/images/v3.png");
   animation-delay: 10s;
 }
 
 .hero-slideshow .slide:nth-child(4) {
-  background-image: url("D:/tbc_new/assets/images/v4.png");
+  background-image: url("assets/images/v4.png");
   animation-delay: 15s;
 }
 .hero-slideshow .slide:nth-child(1) {
-  background-image: url("D:/tbc_new/assets/images/v5.png");
+  background-image: url("assets/images/v5.png");
   animation-delay: 0s;
 }
 
