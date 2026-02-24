@@ -35,43 +35,138 @@
       </p>
     </section>
 
-    <!-- ================= CURRENT SNAPSHOT ================= -->
-    <section class="section">
+    <!-- ================= CURRENT SNAPSHOT CAROUSEL ================= -->
+    <section class="section snapshot-section">
       <h2>Current Snapshot</h2>
 
-      <ul class="reach-list">
-        <li>
-          <strong>Villages visited</strong>
-          <p>
-            30+ villages visited across rural, remote, and unreached regions
-          </p>
-        </li>
-        <li>
-          <strong>Pastors selected</strong>
-          <p>4 pastors prayerfully selected and currently supported</p>
-        </li>
-        <li>
-          <strong>Geographic reach</strong>
-          <p>Rural, remote, and unreached regions across India</p>
-        </li>
-        <li>
-          <strong>Support model</strong>
-          <p>Monthly, consistent, and stewarded with accountability</p>
-        </li>
-        <li>
-          <strong>Current stage</strong>
-          <p>Pastors → Churches → Communities</p>
-        </li>
-        <li>
-          <strong>Ongoing work</strong>
-          <p>
-            Actively identifying and prayerfully discerning pastors across
-            different regions and states in India
-          </p>
-        </li>
-      </ul>
+      <div class="snapshot-carousel">
+        <div class="carousel-controls">
+          <button class="carousel-btn carousel-prev" onclick="moveSlide(-1)">
+            ❮
+          </button>
+          <button class="carousel-btn carousel-next" onclick="moveSlide(1)">
+            ❯
+          </button>
+        </div>
 
-      <p class="section-text">
+        <div class="carousel-container">
+          <!-- January -->
+          <div class="snapshot-slide active">
+            <div class="snapshot-card">
+              <h3 class="month-label">February 2026</h3>
+              <ul class="reach-list">
+                <li>
+                  <strong>Villages visited</strong>
+                  <p>40+ villages visited across rural regions</p>
+                </li>
+                <li>
+                  <strong>Pastors selected</strong>
+                  <p>7 pastors prayerfully selected and supported</p>
+                </li>
+                <li>
+                  <strong>Geographic reach</strong>
+                  <p>Rural and remote regions across South India</p>
+                </li>
+                <li>
+                  <strong>Support model</strong>
+                  <p>Monthly, consistent support with accountability</p>
+                </li>
+                <li>
+                  <strong>Current stage</strong>
+                  <p>Pastors → Churches → Communities</p>
+                </li>
+                <li>
+                  <strong>Ongoing work</strong>
+                  <p>We are hosting free medical camps in 6 villages on 28th February, serving communities through licensed medical professionals.</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- February -->
+          <div class="snapshot-slide">
+            <div class="snapshot-card">
+              <h3 class="month-label">January 2026</h3>
+              <ul class="reach-list">
+                <li>
+                  <strong>Villages visited</strong>
+                  <p>
+                    30+ villages visited across rural, remote, and unreached
+                    regions
+                  </p>
+                </li>
+                <li>
+                  <strong>Pastors selected</strong>
+                  <p>4 pastors prayerfully selected and currently supported</p>
+                </li>
+                <li>
+                  <strong>Geographic reach</strong>
+                  <p>Rural, remote, and unreached regions across India</p>
+                </li>
+                <li>
+                  <strong>Support model</strong>
+                  <p>Monthly, consistent, and stewarded with accountability</p>
+                </li>
+                <li>
+                  <strong>Current stage</strong>
+                  <p>Pastors → Churches → Communities</p>
+                </li>
+                <li>
+                  <strong>Ongoing work</strong>
+                  <p>
+                    Actively identifying and prayerfully discerning pastors
+                    across different regions and states in India
+                  </p>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- March
+          <div class="snapshot-slide">
+            <div class="snapshot-card">
+              <h3 class="month-label">March 2026</h3>
+              <ul class="reach-list">
+                <li>
+                  <strong>Villages visited</strong>
+                  <p>32 villages visited with expanding reach</p>
+                </li>
+                <li>
+                  <strong>Pastors selected</strong>
+                  <p>4 pastors supported with renewed commitment</p>
+                </li>
+                <li>
+                  <strong>Geographic reach</strong>
+                  <p>Expanded to additional states and regions</p>
+                </li>
+                <li>
+                  <strong>Support model</strong>
+                  <p>Enhanced accountability and regular gatherings</p>
+                </li>
+                <li>
+                  <strong>Current stage</strong>
+                  <p>Strong foundation in Pastors, growing Churches</p>
+                </li>
+                <li>
+                  <strong>Ongoing work</strong>
+                  <p>
+                    Strengthening existing partnerships with new pastoral
+                    candidates
+                  </p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>-->
+
+        <div class="carousel-dots">
+          <span class="dot active" onclick="currentSlide(0)"></span>
+          <span class="dot" onclick="currentSlide(1)"></span>
+          <!--<span class="dot" onclick="currentSlide(2)"></span>-->
+        </div>
+      </div>
+
+      <p class="section-text" style="margin-top: 40px">
         Alongside the work already underway, we continue to pray and discern as
         we seek to identify additional pastors in unreached places. Each step
         forward is taken only after prayerful seeking and confirmation, moving
@@ -83,73 +178,99 @@
     <section class="section">
       <h2>How the Work Is Structured</h2>
 
-      <div class="timeline">
-        <div class="timeline-step">
-          <span class="step-number">1</span>
-          <p>
-            <strong>Discernment Through Presence & Prayer:</strong>
-            We go to where pastors are serving and spend time with them on the
-            ground, observing their work and walking alongside them. Through
-            prayer and discernment, we seek God’s confirmation before including
-            anyone in the work.
-          </p>
+      <div class="process-container">
+        <div class="process-step">
+          <div class="step-circle">1</div>
+          <div class="step-content">
+            <h3>Discernment Through Presence & Prayer</h3>
+            <p>
+              We go to where pastors are serving and spend time with them on the
+              ground, observing their work and walking alongside them. Through
+              prayer and discernment, we seek God's confirmation before including
+              anyone in the work.
+            </p>
+          </div>
         </div>
 
-        <div class="timeline-step">
-          <span class="step-number">2</span>
-          <p>
-            <strong>Monthly Support:</strong>
-            Once confirmed, pastors receive consistent monthly support to help
-            them focus on ministry rather than survival.
-          </p>
-        </div>
-        <div class="timeline-step">
-          <span class="step-number">3</span>
-          <p>
-            <strong>Regular Gatherings & Care:</strong>
-            We hold regular monthly gatherings to strengthen and encourage
-            pastors, pray together, provide meals, and cover travel expenses.
-            These gatherings help us understand their needs and care for them
-            personally.
-          </p>
-        </div>
-        <div class="timeline-step">
-          <span class="step-number">4</span>
-          <p>
-            <strong>Ongoing Discernment & Review:</strong>
-            Every 3-6 months, we prayerfully revisit how each pastor is doing,
-            the fruit of their work, and their faithfulness-seeking God’s
-            guidance at every step.
-          </p>
+        <div class="process-connector"></div>
+
+        <div class="process-step">
+          <div class="step-circle">2</div>
+          <div class="step-content">
+            <h3>Monthly Support</h3>
+            <p>
+              Once confirmed, pastors receive consistent monthly support to help
+              them focus on ministry rather than survival.
+            </p>
+          </div>
         </div>
 
-        <div class="timeline-step">
-          <span class="step-number">5</span>
-          <p>
-            <strong>Continuation or Closure:</strong>
-            Support continues as long as the pastor is faithfully serving and
-            stewarding the work entrusted to them. When needed, support is
-            respectfully brought to a close, always handled with prayer and
-            care.
-          </p>
+        <div class="process-connector"></div>
+        <div class="process-step">
+          <div class="step-circle">3</div>
+          <div class="step-content">
+            <h3>Regular Gatherings & Care</h3>
+            <p>
+              We hold regular monthly gatherings to strengthen and encourage
+              pastors, pray together, provide meals, and cover travel expenses.
+              These gatherings help us understand their needs and care for them
+              personally.
+            </p>
+          </div>
         </div>
 
-        <div class="timeline-step">
-          <span class="step-number">6</span>
-          <p>
-            <strong>Strengthening Churches:</strong>
-            Through supported pastors, local churches are strengthened and
-            stabilized in their calling.
-          </p>
+        <div class="process-connector"></div>
+        <div class="process-step">
+          <div class="step-circle">4</div>
+          <div class="step-content">
+            <h3>Ongoing Discernment & Review</h3>
+            <p>
+              Every 3-6 months, we prayerfully revisit how each pastor is doing,
+              the fruit of their work, and their faithfulness-seeking God's
+              guidance at every step.
+            </p>
+          </div>
         </div>
 
-        <div class="timeline-step">
-          <span class="step-number">7</span>
-          <p>
-            <strong>Reaching Communities:</strong>
-            As churches grow healthy and established, the Gospel naturally
-            extends into the surrounding community.
-          </p>
+        <div class="process-connector"></div>
+
+        <div class="process-step">
+          <div class="step-circle">5</div>
+          <div class="step-content">
+            <h3>Continuation or Closure</h3>
+            <p>
+              Support continues as long as the pastor is faithfully serving and
+              stewarding the work entrusted to them. When needed, support is
+              respectfully brought to a close, always handled with prayer and
+              care.
+            </p>
+          </div>
+        </div>
+
+        <div class="process-connector"></div>
+
+        <div class="process-step">
+          <div class="step-circle">6</div>
+          <div class="step-content">
+            <h3>Strengthening Churches</h3>
+            <p>
+              Through supported pastors, local churches are strengthened and
+              stabilized in their calling.
+            </p>
+          </div>
+        </div>
+
+        <div class="process-connector"></div>
+
+        <div class="process-step">
+          <div class="step-circle">7</div>
+          <div class="step-content">
+            <h3>Reaching Communities</h3>
+            <p>
+              As churches grow healthy and established, the Gospel naturally
+              extends into the surrounding community.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -195,7 +316,7 @@
         <h4>Explore</h4>
         <a href="index.html">About Us</a>
         <a href="where-we-are-right-now.html">Where We Are Right Now</a>
-        <a href="give.html">Give</a>
+        <a href="give.html">Join the Journey</a>
       </div>
 
       <div class="footer-contact">

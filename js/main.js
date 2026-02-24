@@ -1,5 +1,56 @@
 document.addEventListener("DOMContentLoaded", function () {
   /* ===============================
+     SNAPSHOT CAROUSEL
+  =============================== */
+
+  let currentSlideIndex = 0;
+
+  window.moveSlide = function (direction) {
+    const slides = document.querySelectorAll(".snapshot-slide");
+    const totalSlides = slides.length;
+
+    currentSlideIndex += direction;
+
+    if (currentSlideIndex >= totalSlides) {
+      currentSlideIndex = 0;
+    } else if (currentSlideIndex < 0) {
+      currentSlideIndex = totalSlides - 1;
+    }
+
+    showSlide(currentSlideIndex);
+  };
+
+  window.currentSlide = function (index) {
+    currentSlideIndex = index;
+    showSlide(index);
+  };
+
+  function showSlide(index) {
+    const slides = document.querySelectorAll(".snapshot-slide");
+    const dots = document.querySelectorAll(".dot");
+
+    if (index >= slides.length) {
+      currentSlideIndex = 0;
+    } else if (index < 0) {
+      currentSlideIndex = slides.length - 1;
+    }
+
+    slides.forEach((slide) => {
+      slide.classList.remove("active");
+    });
+    dots.forEach((dot) => {
+      dot.classList.remove("active");
+    });
+
+    if (slides[currentSlideIndex]) {
+      slides[currentSlideIndex].classList.add("active");
+    }
+    if (dots[currentSlideIndex]) {
+      dots[currentSlideIndex].classList.add("active");
+    }
+  }
+
+  /* ===============================
      CONTACT POPUP OPEN / CLOSE
   =============================== */
 
