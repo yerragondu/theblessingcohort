@@ -365,7 +365,7 @@ main {
 }
 
 .project-accordion summary::after {
-  content: "v";
+  content: "🙂";
 }
 
 #projects .giving-grid {
@@ -449,6 +449,29 @@ main {
   letter-spacing: 0.2em;
   margin-bottom: 12px;
   text-transform: uppercase;
+}
+
+.hero-statement {
+  color: var(--ink-900);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.45;
+  margin-bottom: 18px;
+  max-width: 38ch;
+  text-transform: none;
+}
+
+.hero-statement-title,
+.hero-statement-subtitle {
+  display: block;
+}
+
+.hero-statement-subtitle {
+  color: var(--ink-700);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 2px;
 }
 
 .hero-title,
