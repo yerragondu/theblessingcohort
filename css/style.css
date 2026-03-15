@@ -374,6 +374,21 @@ main {
   gap: 32px;
 }
 
+.project-accordion summary {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.project-accordion summary::marker {
+  content: "";
+}
+
+.project-accordion summary::after {
+  color: var(--ink-700);
+  content: "\1F642";
+  font-size: 1rem;
+}
+
 #projects .story-card {
   padding: 48px;
 }
@@ -472,6 +487,11 @@ main {
   font-size: 0.95rem;
   font-weight: 600;
   margin-top: 2px;
+}
+
+.page-home .hero-statement {
+  letter-spacing: -0.01em;
+  text-transform: none;
 }
 
 .hero-title,
