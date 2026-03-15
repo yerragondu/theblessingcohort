@@ -257,25 +257,62 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const prevButton = container.querySelector("[data-slide-prev]");
     const nextButton = container.querySelector("[data-slide-next]");
-    const firstSlide = track.querySelector(".slider-slide");
+    const slides = Array.from(track.querySelectorAll(".slider-slide"));
+    const firstSlide = slides[0];
 
     if (!firstSlide) {
       return;
     }
 
     const getStep = () => firstSlide.getBoundingClientRect().width;
+    let currentIndex = 0;
+
+    const syncIndexFromScroll = () => {
+      let closestIndex = 0;
+      let closestDistance = Number.POSITIVE_INFINITY;
+
+      slides.forEach((slide, index) => {
+        const distance = Math.abs(track.scrollLeft - slide.offsetLeft);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+      });
+
+      currentIndex = closestIndex;
+    };
+
+    const scrollToIndex = (index) => {
+      const maxIndex = Math.max(slides.length - 1, 0);
+      const safeIndex = Math.min(Math.max(index, 0), maxIndex);
+      const targetSlide = slides[safeIndex];
+
+      currentIndex = safeIndex;
+      if (targetSlide) {
+        targetSlide.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "start",
+        });
+      } else {
+        track.scrollTo({ left: getStep() * safeIndex, behavior: "smooth" });
+      }
+    };
 
     if (prevButton) {
       prevButton.addEventListener("click", () => {
-        track.scrollBy({ left: -getStep(), behavior: "smooth" });
+        scrollToIndex(currentIndex - 1);
       });
     }
 
     if (nextButton) {
       nextButton.addEventListener("click", () => {
-        track.scrollBy({ left: getStep(), behavior: "smooth" });
+        scrollToIndex(currentIndex + 1);
       });
     }
+
+    track.addEventListener("scroll", syncIndexFromScroll, { passive: true });
+    syncIndexFromScroll();
   });
 
   document.querySelectorAll(".timeline-grid").forEach((section) => {

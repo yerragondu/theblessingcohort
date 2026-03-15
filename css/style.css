@@ -194,6 +194,18 @@ main {
   width: 44px;
 }
 
+.nav-toggle-bar {
+  background: var(--sand-100);
+  border-radius: 999px;
+  display: block;
+  height: 2px;
+  width: 16px;
+}
+
+.nav-toggle .nav-toggle-bar + .nav-toggle-bar {
+  margin-top: 3px;
+}
+
 .nav-panel {
   align-items: center;
   display: flex;
@@ -302,6 +314,85 @@ main {
 
 .page-community .page-hero::after {
   display: none;
+}
+
+.project-accordion-list {
+  display: grid;
+  gap: 18px;
+}
+
+.project-accordion {
+  background: linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
+  border: 1px solid rgba(17, 17, 17, 0.06);
+  border-radius: 28px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.project-accordion summary {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-size: 1.35rem;
+  font-weight: 700;
+  justify-content: space-between;
+  letter-spacing: -0.03em;
+  list-style: none;
+  padding: 24px 28px;
+}
+
+.project-accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.project-accordion summary::after {
+  color: var(--ink-700);
+  content: "▾";
+  font-size: 1rem;
+  transition: transform 0.24s ease;
+}
+
+.project-accordion[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.project-accordion-body {
+  border-top: 1px solid rgba(17, 17, 17, 0.06);
+  color: var(--ink-700);
+  font-size: 0.98rem;
+  line-height: 1.85;
+  padding: 28px 32px 32px;
+}
+
+.project-accordion summary::after {
+  content: "v";
+}
+
+#projects .giving-grid {
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.96fr);
+  gap: 32px;
+}
+
+#projects .story-card {
+  padding: 48px;
+}
+
+#projects .giving-slider {
+  padding: 20px;
+}
+
+#projects .project-copy-card {
+  display: flex;
+  min-height: 100%;
+}
+
+#projects .project-copy-scroll {
+  max-height: 520px;
+  overflow-y: auto;
+  padding-right: 10px;
+  scrollbar-width: thin;
+  width: 100%;
 }
 
 .page-home .hero-copy {
@@ -1420,6 +1511,14 @@ main {
   text-transform: uppercase;
 }
 
+.slider-scroll-note {
+  color: var(--ink-700);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .slider-controls {
   display: flex;
   gap: 8px;
@@ -1862,16 +1961,18 @@ main {
 
 @media (max-width: 860px) {
   .site-header {
-    padding: 14px 16px;
+    padding: 12px 14px;
   }
 
   .header-shell {
-    border-radius: 28px;
-    padding: 14px 16px;
+    border-radius: 24px;
+    gap: 14px;
+    padding: 12px 14px;
   }
 
   .nav-toggle {
     display: inline-flex;
+    flex-direction: column;
   }
 
   .nav-panel {
@@ -1917,9 +2018,30 @@ main {
   .hero-shell,
   .page-hero,
   .band-grid,
-  .mission-shell {
+  .mission-shell,
+  .impact-panel {
     border-radius: 32px;
     padding: 40px 24px;
+  }
+
+  .section {
+    margin-top: 60px;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 8vw, 2.8rem);
+    line-height: 1.02;
+  }
+
+  .section-lede,
+  .page-hero-lede,
+  .hero-lede,
+  .story-copy p,
+  .timeline-card p,
+  .impact-list span,
+  .stats-stack span {
+    font-size: 0.95rem;
+    line-height: 1.75;
   }
 
   .hero-facts {
@@ -1945,9 +2067,21 @@ main {
   .section-head {
     align-items: start;
     flex-direction: column;
+    gap: 14px;
+    margin-bottom: 28px;
   }
 
   .timeline-cards {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .project-sync-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-scroll-pane {
     max-height: none;
     overflow: visible;
     padding-right: 0;
@@ -1962,6 +2096,82 @@ main {
     grid-column: auto;
     justify-self: stretch;
     max-width: none;
+  }
+
+  .story-card,
+  .timeline-card,
+  .footer-block,
+  .principle-card,
+  .method-card,
+  .media-card {
+    border-radius: 24px;
+  }
+
+  .story-card,
+  .timeline-card,
+  .principle-card,
+  .method-card,
+  .media-placeholder,
+  .footer-block {
+    padding: 28px;
+  }
+
+  .project-accordion summary {
+    font-size: 1.15rem;
+    padding: 20px 22px;
+  }
+
+  .project-accordion-body {
+    padding: 22px;
+  }
+
+  #projects .giving-grid {
+    gap: 20px;
+  }
+
+  #projects .project-copy-scroll {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  #projects .story-card,
+  #projects .giving-slider {
+    padding: 24px;
+  }
+
+  .slider-head {
+    gap: 12px;
+  }
+
+  .slider-head strong,
+  .slider-scroll-note {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+  }
+
+  .brand-name {
+    font-size: 0.92rem;
+  }
+
+  .brand-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+  }
+
+  .hero-title,
+  .page-hero-title {
+    font-size: clamp(2.8rem, 13vw, 4.2rem);
+    line-height: 0.96;
+  }
+
+  .hero-shell {
+    gap: 28px;
+    padding-top: 34px;
+  }
+
+  .page-hero {
+    gap: 24px;
   }
 
   .method-card {
@@ -1981,7 +2191,69 @@ main {
 }
 
 @media (max-width: 640px) {
+  .page-shell {
+    padding: 94px 12px 24px;
+  }
+
+  .header-shell {
+    padding: 10px 12px;
+  }
+
+  .brand {
+    gap: 10px;
+  }
+
+  .brand-mark {
+    border-radius: 16px;
+    height: 42px;
+    width: 42px;
+  }
+
   .brand-tag {
     display: none;
+  }
+
+  .hero-shell,
+  .page-hero,
+  .band-grid,
+  .mission-shell,
+  .impact-panel {
+    border-radius: 26px;
+    padding: 28px 18px;
+  }
+
+  .section {
+    margin-top: 42px;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 9vw, 2.4rem);
+  }
+
+  .story-card,
+  .timeline-card,
+  .principle-card,
+  .method-card,
+  .media-placeholder,
+  .footer-block,
+  #projects .story-card,
+  #projects .giving-slider {
+    padding: 20px;
+  }
+
+  .project-accordion summary {
+    padding: 18px;
+  }
+
+  .project-accordion-body {
+    padding: 18px;
+  }
+
+  .slider-button {
+    padding: 8px 12px;
+  }
+
+  .contact-panel {
+    padding: 24px;
   }
 }
