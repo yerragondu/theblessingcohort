@@ -1,105 +1,338 @@
-document.addEventListener("DOMContentLoaded", function () {
-  /* ===============================
-     SNAPSHOT CAROUSEL
-  =============================== */
+document.addEventListener("DOMContentLoaded", () => {
+  const body = document.body;
+  const header = document.querySelector(".site-header");
+  const navToggle = document.querySelector("[data-nav-toggle]");
+  const navPanel = document.querySelector("[data-nav]");
+  const contactModal = document.querySelector("[data-contact-modal]");
+  const contactOverlay = document.querySelector("[data-contact-overlay]");
+  const musicToggle = document.querySelector("[data-music-toggle]");
+  const siteAudio = document.querySelector("[data-site-audio]");
+  const contactCloseButtons = document.querySelectorAll("[data-close-contact]");
+  const contactOpenButtons = document.querySelectorAll("[data-open-contact]");
+  const form = document.getElementById("contactForm");
+  const formStatus = document.getElementById("successMsg");
+  const musicStorageKey = "tbc_music_enabled";
+  const musicTimeKey = "tbc_music_time";
 
-  let currentSlideIndex = 0;
-
-  window.moveSlide = function (direction) {
-    const slides = document.querySelectorAll(".snapshot-slide");
-    const totalSlides = slides.length;
-
-    currentSlideIndex += direction;
-
-    if (currentSlideIndex >= totalSlides) {
-      currentSlideIndex = 0;
-    } else if (currentSlideIndex < 0) {
-      currentSlideIndex = totalSlides - 1;
-    }
-
-    showSlide(currentSlideIndex);
+  const lockBody = (locked) => {
+    body.classList.toggle("is-locked", locked);
   };
 
-  window.currentSlide = function (index) {
-    currentSlideIndex = index;
-    showSlide(index);
+  const isAnyModalOpen = () => {
+    return Boolean(contactModal && contactModal.classList.contains("is-open"));
   };
 
-  function showSlide(index) {
-    const slides = document.querySelectorAll(".snapshot-slide");
-    const dots = document.querySelectorAll(".dot");
-
-    if (index >= slides.length) {
-      currentSlideIndex = 0;
-    } else if (index < 0) {
-      currentSlideIndex = slides.length - 1;
+  const closeNav = () => {
+    if (!navPanel || !navToggle) {
+      return;
     }
 
-    slides.forEach((slide) => {
-      slide.classList.remove("active");
-    });
-    dots.forEach((dot) => {
-      dot.classList.remove("active");
-    });
+    navPanel.classList.remove("is-open");
+    navToggle.setAttribute("aria-expanded", "false");
+    lockBody(isAnyModalOpen());
+  };
 
-    if (slides[currentSlideIndex]) {
-      slides[currentSlideIndex].classList.add("active");
+  const openNav = () => {
+    if (!navPanel || !navToggle) {
+      return;
     }
-    if (dots[currentSlideIndex]) {
-      dots[currentSlideIndex].classList.add("active");
-    }
-  }
 
-  /* ===============================
-     CONTACT POPUP OPEN / CLOSE
-  =============================== */
+    navPanel.classList.add("is-open");
+    navToggle.setAttribute("aria-expanded", "true");
+    lockBody(true);
+  };
 
-  const contactBubble = document.getElementById("contactBubble");
-  const contactModal = document.getElementById("contactModal");
-  const closeContact = document.getElementById("closeContact");
-  const contactOverlay = document.getElementById("contactOverlay");
-
-  if (contactBubble && contactModal && closeContact && contactOverlay) {
-    contactBubble.addEventListener("click", function () {
-      contactModal.classList.add("active");
-    });
-
-    closeContact.addEventListener("click", function () {
-      contactModal.classList.remove("active");
-    });
-
-    contactOverlay.addEventListener("click", function () {
-      contactModal.classList.remove("active");
-    });
-
-    // Close on Escape key
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && contactModal.classList.contains("active")) {
-        contactModal.classList.remove("active");
+  if (navToggle && navPanel) {
+    navToggle.addEventListener("click", () => {
+      const isOpen = navPanel.classList.contains("is-open");
+      if (isOpen) {
+        closeNav();
+      } else {
+        openNav();
       }
     });
-  }
 
-  // Alternative CTA button
-  const contactBubbleAlt = document.getElementById("contactBubbleAlt");
-  if (contactBubbleAlt && contactModal) {
-    contactBubbleAlt.addEventListener("click", function () {
-      contactModal.classList.add("active");
+    navPanel.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", closeNav);
     });
   }
 
-  /* ===============================
-     WEB3FORMS SUBMISSION (NO REDIRECT)
-  =============================== */
+  const closeModal = () => {
+    if (!contactModal) {
+      return;
+    }
 
-  const form = document.getElementById("contactForm");
-  const successMsg = document.getElementById("successMsg");
+    contactModal.classList.remove("is-open");
+    if (navPanel && navPanel.classList.contains("is-open")) {
+      lockBody(true);
+    } else {
+      lockBody(isAnyModalOpen());
+    }
+  };
+
+  const openModal = () => {
+    if (!contactModal) {
+      return;
+    }
+
+    contactModal.classList.add("is-open");
+    closeNav();
+    lockBody(true);
+  };
+
+  contactOpenButtons.forEach((button) => {
+    button.addEventListener("click", openModal);
+  });
+
+  if (contactOverlay) {
+    contactOverlay.addEventListener("click", closeModal);
+  }
+
+  contactCloseButtons.forEach((button) => {
+    button.addEventListener("click", closeModal);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeNav();
+      closeModal();
+    }
+  });
+
+  if (header) {
+    let lastScrollY = window.scrollY;
+
+    const syncHeader = () => {
+      const currentScrollY = window.scrollY;
+      const isScrollingDown = currentScrollY > lastScrollY;
+      const shouldHide =
+        isScrollingDown &&
+        currentScrollY > 140 &&
+        !(navPanel && navPanel.classList.contains("is-open")) &&
+        !isAnyModalOpen();
+
+      header.classList.toggle("is-scrolled", currentScrollY > 24);
+      header.classList.toggle("is-hidden", shouldHide);
+      lastScrollY = currentScrollY;
+    };
+
+    syncHeader();
+    window.addEventListener("scroll", syncHeader, { passive: true });
+  }
+
+  if (musicToggle && siteAudio) {
+    const syncMusicButton = () => {
+      const isPlaying = !siteAudio.paused;
+      musicToggle.classList.toggle("is-playing", isPlaying);
+      musicToggle.setAttribute(
+        "aria-label",
+        isPlaying ? "Pause music" : "Play music"
+      );
+      musicToggle.setAttribute(
+        "title",
+        isPlaying ? "Pause music" : "Play music"
+      );
+    };
+
+    const saveMusicState = () => {
+      if (!siteAudio.paused) {
+        window.localStorage.setItem(musicStorageKey, "true");
+      }
+      window.localStorage.setItem(musicTimeKey, String(siteAudio.currentTime || 0));
+    };
+
+    const restoreMusicState = async () => {
+      const shouldResume = window.localStorage.getItem(musicStorageKey) === "true";
+      const storedTime = Number(window.localStorage.getItem(musicTimeKey) || "0");
+
+      if (storedTime > 0) {
+        const setStoredTime = () => {
+          siteAudio.currentTime = storedTime;
+        };
+
+        if (siteAudio.readyState >= 1) {
+          setStoredTime();
+        } else {
+          siteAudio.addEventListener("loadedmetadata", setStoredTime, {
+            once: true,
+          });
+        }
+      }
+
+      if (!shouldResume) {
+        syncMusicButton();
+        return;
+      }
+
+      try {
+        await siteAudio.play();
+      } catch (error) {
+        syncMusicButton();
+      }
+    };
+
+    musicToggle.addEventListener("click", async () => {
+      const source = siteAudio.querySelector("source");
+      const hasSource = source && source.getAttribute("src");
+
+      if (!hasSource) {
+        window.alert("Add a song file to assets/audio/site-theme.mp3 to use this button.");
+        return;
+      }
+
+      try {
+        if (siteAudio.paused) {
+          await siteAudio.play();
+          window.localStorage.setItem(musicStorageKey, "true");
+        } else {
+          siteAudio.pause();
+          window.localStorage.setItem(musicStorageKey, "false");
+        }
+        syncMusicButton();
+      } catch (error) {
+        window.alert("Music is ready, but the song file is not available yet.");
+      }
+    });
+
+    siteAudio.addEventListener("ended", syncMusicButton);
+    siteAudio.addEventListener("pause", syncMusicButton);
+    siteAudio.addEventListener("play", syncMusicButton);
+    siteAudio.addEventListener("timeupdate", saveMusicState);
+    window.addEventListener("pagehide", saveMusicState);
+    restoreMusicState();
+  }
+
+  const revealItems = document.querySelectorAll("[data-reveal]");
+  if ("IntersectionObserver" in window) {
+    const revealObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.15,
+        rootMargin: "0px 0px -40px 0px",
+      }
+    );
+
+    revealItems.forEach((item, index) => {
+      item.classList.add("reveal");
+      item.style.setProperty("--reveal-delay", `${Math.min(index % 6, 5) * 80}ms`);
+      revealObserver.observe(item);
+    });
+  } else {
+    revealItems.forEach((item) => {
+      item.classList.add("is-visible");
+    });
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", (event) => {
+      const href = anchor.getAttribute("href");
+      if (!href || href === "#") {
+        return;
+      }
+
+      const target = document.querySelector(href);
+      if (!target) {
+        return;
+      }
+
+      event.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  document.querySelectorAll("[data-slider-track]").forEach((track) => {
+    const container = track.closest(".giving-slider");
+    if (!container) {
+      return;
+    }
+
+    const prevButton = container.querySelector("[data-slide-prev]");
+    const nextButton = container.querySelector("[data-slide-next]");
+    const firstSlide = track.querySelector(".slider-slide");
+
+    if (!firstSlide) {
+      return;
+    }
+
+    const getStep = () => firstSlide.getBoundingClientRect().width;
+
+    if (prevButton) {
+      prevButton.addEventListener("click", () => {
+        track.scrollBy({ left: -getStep(), behavior: "smooth" });
+      });
+    }
+
+    if (nextButton) {
+      nextButton.addEventListener("click", () => {
+        track.scrollBy({ left: getStep(), behavior: "smooth" });
+      });
+    }
+  });
+
+  document.querySelectorAll(".timeline-grid").forEach((section) => {
+    const timelineCards = section.querySelector(".timeline-cards");
+    const sliderTrack = section.querySelector(".timeline-slider [data-slider-track]");
+
+    if (!timelineCards || !sliderTrack) {
+      return;
+    }
+
+    let syncFrame = null;
+
+    const syncTimelineSlider = () => {
+      syncFrame = null;
+
+      const timelineMaxScroll = Math.max(
+        timelineCards.scrollHeight - timelineCards.clientHeight,
+        0
+      );
+      const sliderMaxScroll = Math.max(
+        sliderTrack.scrollWidth - sliderTrack.clientWidth,
+        0
+      );
+
+      if (timelineMaxScroll === 0 || sliderMaxScroll === 0) {
+        sliderTrack.scrollLeft = 0;
+        return;
+      }
+
+      const progress = timelineCards.scrollTop / timelineMaxScroll;
+      sliderTrack.scrollLeft = progress * sliderMaxScroll;
+    };
+
+    const requestSliderSync = () => {
+      if (syncFrame !== null) {
+        return;
+      }
+
+      syncFrame = window.requestAnimationFrame(syncTimelineSlider);
+    };
+
+    timelineCards.addEventListener("scroll", requestSliderSync, { passive: true });
+    window.addEventListener("resize", requestSliderSync);
+    requestSliderSync();
+  });
 
   if (form) {
-    form.addEventListener("submit", async function (e) {
-      e.preventDefault();
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
 
+      const submitButton = form.querySelector('button[type="submit"]');
       const formData = new FormData(form);
+
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = "Sending...";
+      }
 
       try {
         const response = await fetch(form.action, {
@@ -108,110 +341,35 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         const result = await response.json();
-
-        if (result.success) {
-          if (successMsg) {
-            successMsg.style.display = "block";
-            successMsg.style.animation = "fadeIn 0.3s ease";
-          }
-          form.reset();
-
-          // Auto-close after 3 seconds
-          setTimeout(() => {
-            contactModal.classList.remove("active");
-            if (successMsg) successMsg.style.display = "none";
-          }, 3000);
-        } else {
-          alert("Something went wrong. Please try again.");
+        if (!result.success) {
+          throw new Error("Submission failed");
         }
+
+        form.reset();
+        if (formStatus) {
+          formStatus.classList.add("is-visible");
+        }
+
+        window.setTimeout(() => {
+          if (formStatus) {
+            formStatus.classList.remove("is-visible");
+          }
+          closeModal();
+        }, 2600);
       } catch (error) {
-        alert("Network error. Please try again later.");
-      }
-    });
-  }
-
-  /* ===============================
-     SCROLL ANIMATIONS
-  =============================== */
-
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: "0px 0px -50px 0px",
-  };
-
-  const observer = new IntersectionObserver(function (entries) {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = "1";
-        entry.target.style.animation = "fadeInUp 0.6s ease-out forwards";
-      }
-    });
-  }, observerOptions);
-
-  // Observe section elements
-  document.querySelectorAll(".section").forEach((el) => {
-    el.style.opacity = "0";
-    observer.observe(el);
-  });
-
-  /* ===============================
-     SMOOTH SCROLL FOR ANCHOR LINKS
-  =============================== */
-
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
-      const href = this.getAttribute("href");
-      if (href === "#") return;
-
-      e.preventDefault();
-      const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    });
-  });
-
-  /* ===============================
-     HEADER SCROLL EFFECT
-  =============================== */
-
-  const header = document.querySelector(".site-header");
-  let lastScroll = 0;
-
-  if (header) {
-    window.addEventListener("scroll", function () {
-      const currentScroll = window.pageYOffset;
-
-      if (currentScroll > 100) {
-        header.style.boxShadow = "0 12px 40px rgba(0,0,0,0.2)";
-      } else {
-        header.style.boxShadow = "0 8px 32px rgba(0,0,0,0.15)";
-      }
-
-      lastScroll = currentScroll;
-    });
-  }
-
-  /* ===============================
-     LAZY LOAD IMAGES
-  =============================== */
-
-  if ("IntersectionObserver" in window) {
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          if (img.dataset.src) {
-            img.src = img.dataset.src;
-            img.removeAttribute("data-src");
-          }
-          observer.unobserve(img);
+        window.alert("Something went wrong. Please try again in a moment.");
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = "Send message";
         }
-      });
-    });
-
-    document.querySelectorAll("img[data-src]").forEach((img) => {
-      imageObserver.observe(img);
+      }
     });
   }
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 860) {
+      closeNav();
+    }
+  });
 });
