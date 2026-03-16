@@ -1157,6 +1157,10 @@ main {
   line-height: 1.85;
 }
 
+#next-season .impact-list {
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+}
+
 .snapshot-grid,
 .support-grid,
 .care-grid,
@@ -2126,6 +2130,10 @@ main {
   .impact-list {
     grid-template-columns: 1fr;
     max-width: 820px;
+  }
+
+  #next-season .impact-list {
+    grid-template-columns: 1fr;
   }
 
   .story-card,
