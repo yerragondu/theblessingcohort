@@ -232,6 +232,72 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  const countUpItems = document.querySelectorAll("[data-count-up]");
+  const animateCountUp = (element) => {
+    if (element.dataset.counted === "true") {
+      return;
+    }
+
+    const finalText = (element.dataset.countFinal || element.textContent || "").trim();
+    const match = finalText.match(/^([^0-9]*)(\d+)([^0-9]*)$/);
+
+    if (!match) {
+      element.dataset.counted = "true";
+      return;
+    }
+
+    const [, prefix, rawNumber, suffix] = match;
+    const targetValue = Number(rawNumber);
+    const duration = 1400;
+    const startTime = performance.now();
+
+    element.dataset.countFinal = finalText;
+    element.dataset.counted = "true";
+    element.textContent = `${prefix}0${suffix}`;
+
+    const tick = (now) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      const currentValue = Math.round(targetValue * easedProgress);
+
+      element.textContent = `${prefix}${currentValue}${suffix}`;
+
+      if (progress < 1) {
+        window.requestAnimationFrame(tick);
+      } else {
+        element.textContent = finalText;
+      }
+    };
+
+    window.requestAnimationFrame(tick);
+  };
+
+  if ("IntersectionObserver" in window) {
+    const countObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          animateCountUp(entry.target);
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.5,
+      }
+    );
+
+    countUpItems.forEach((item) => {
+      countObserver.observe(item);
+    });
+  } else {
+    countUpItems.forEach((item) => {
+      animateCountUp(item);
+    });
+  }
+
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", (event) => {
       const href = anchor.getAttribute("href");
