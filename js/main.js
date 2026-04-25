@@ -7,8 +7,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const contactOverlay = document.querySelector("[data-contact-overlay]");
   const musicToggle = document.querySelector("[data-music-toggle]");
   const siteAudio = document.querySelector("[data-site-audio]");
+  const storyModal = document.querySelector("[data-story-modal]");
+  const storyModalKicker = document.querySelector("[data-story-modal-kicker]");
+  const storyModalTitle = document.querySelector("[data-story-modal-title]");
+  const storyModalBody = document.querySelector("[data-story-modal-body]");
   const contactCloseButtons = document.querySelectorAll("[data-close-contact]");
   const contactOpenButtons = document.querySelectorAll("[data-open-contact]");
+  const storyCloseButtons = document.querySelectorAll("[data-close-story]");
+  const storyOpenButtons = document.querySelectorAll("[data-open-story]");
   const form = document.getElementById("contactForm");
   const formStatus = document.getElementById("successMsg");
   const musicStorageKey = "tbc_music_enabled";
@@ -19,7 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const isAnyModalOpen = () => {
-    return Boolean(contactModal && contactModal.classList.contains("is-open"));
+    return Boolean(
+      (contactModal && contactModal.classList.contains("is-open")) ||
+        (storyModal && storyModal.classList.contains("is-open"))
+    );
   };
 
   const closeNav = () => {
@@ -70,6 +79,50 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  const closeStoryModal = () => {
+    if (!storyModal) {
+      return;
+    }
+
+    storyModal.classList.remove("is-open");
+    lockBody(isAnyModalOpen());
+  };
+
+  const openStoryModal = (button) => {
+    if (!storyModal || !storyModalTitle || !storyModalBody) {
+      return;
+    }
+
+    if (storyModalKicker) {
+      storyModalKicker.textContent = button.dataset.storyKicker || "";
+    }
+
+    storyModalTitle.textContent = button.dataset.storyTitle || "";
+    storyModalBody.innerHTML = "";
+
+    const templateId = button.dataset.storyTemplate;
+    const template = templateId ? document.getElementById(templateId) : null;
+
+    if (template) {
+      storyModalBody.appendChild(template.content.cloneNode(true));
+    } else {
+      const paragraphs = (button.dataset.storyBody || "")
+        .split("||")
+        .map((item) => item.trim())
+        .filter(Boolean);
+
+      paragraphs.forEach((paragraph) => {
+        const element = document.createElement("p");
+        element.textContent = paragraph;
+        storyModalBody.appendChild(element);
+      });
+    }
+
+    storyModal.classList.add("is-open");
+    closeNav();
+    lockBody(true);
+  };
+
   const openModal = () => {
     if (!contactModal) {
       return;
@@ -84,6 +137,12 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", openModal);
   });
 
+  storyOpenButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      openStoryModal(button);
+    });
+  });
+
   if (contactOverlay) {
     contactOverlay.addEventListener("click", closeModal);
   }
@@ -92,10 +151,15 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", closeModal);
   });
 
+  storyCloseButtons.forEach((button) => {
+    button.addEventListener("click", closeStoryModal);
+  });
+
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closeNav();
       closeModal();
+      closeStoryModal();
     }
   });
 
