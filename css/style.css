@@ -2165,10 +2165,10 @@ main {
   background: linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%);
   border-radius: 28px;
   box-shadow: var(--shadow-lg);
-  max-width: 560px;
+  max-width: 640px;
   padding: 34px;
   position: relative;
-  width: min(100%, 560px);
+  width: min(100%, 640px);
 }
 
 .contact-panel h3 {
@@ -2182,6 +2182,74 @@ main {
 .contact-subtext {
   color: var(--ink-700);
   margin-bottom: 22px;
+}
+
+.contact-view {
+  display: grid;
+  gap: 0;
+}
+
+.contact-view[hidden] {
+  display: none;
+}
+
+.contact-choice-grid {
+  display: grid;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.contact-choice {
+  align-items: start;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(21, 34, 35, 0.12);
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+  color: var(--ink-950);
+  cursor: pointer;
+  display: grid;
+  gap: 6px;
+  padding: 18px 20px;
+  text-align: left;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.contact-choice strong {
+  font-size: 1.02rem;
+  line-height: 1.2;
+}
+
+.contact-choice span {
+  color: var(--ink-700);
+  line-height: 1.65;
+}
+
+.contact-choice:hover,
+.contact-choice:focus-visible {
+  border-color: rgba(0, 113, 227, 0.36);
+  box-shadow: 0 18px 30px rgba(17, 17, 17, 0.08);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.contact-back {
+  align-self: start;
+  background: transparent;
+  border: none;
+  color: var(--clay-500);
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+  padding: 0;
+  text-transform: uppercase;
+}
+
+.contact-back:hover,
+.contact-back:focus-visible {
+  color: var(--ink-950);
+  outline: none;
 }
 
 .contact-close {
@@ -2241,6 +2309,14 @@ main {
   border-color: rgba(0, 113, 227, 0.72);
   box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.12);
   outline: none;
+}
+
+.contact-form--newsletter {
+  margin-top: 6px;
+}
+
+.contact-form--newsletter .submit-btn {
+  margin-top: 8px;
 }
 
 .submit-btn {

@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const navPanel = document.querySelector("[data-nav]");
   const contactModal = document.querySelector("[data-contact-modal]");
   const contactOverlay = document.querySelector("[data-contact-overlay]");
+  const contactPanel = contactModal ? contactModal.querySelector(".contact-panel") : null;
   const musicToggle = document.querySelector("[data-music-toggle]");
   const siteAudio = document.querySelector("[data-site-audio]");
   const storyModal = document.querySelector("[data-story-modal]");
@@ -15,10 +16,165 @@ document.addEventListener("DOMContentLoaded", () => {
   const contactOpenButtons = document.querySelectorAll("[data-open-contact]");
   const storyCloseButtons = document.querySelectorAll("[data-close-story]");
   const storyOpenButtons = document.querySelectorAll("[data-open-story]");
-  const form = document.getElementById("contactForm");
-  const formStatus = document.getElementById("successMsg");
+  let contactChoiceButtons = [];
+  let contactBackButtons = [];
+  let contactForms = [];
+  let contactViews = [];
   const musicStorageKey = "tbc_music_enabled";
   const musicTimeKey = "tbc_music_time";
+
+  const setupContactModal = () => {
+    if (!contactPanel || contactPanel.dataset.enhanced === "true") {
+      return;
+    }
+
+    const closeButton = contactPanel.querySelector(".contact-close");
+    const existingTitle = contactPanel.querySelector("#contactTitle") || contactPanel.querySelector("h3");
+    const existingSubtext = contactPanel.querySelector(".contact-subtext");
+    const existingForm = document.getElementById("contactForm");
+
+    if (!closeButton || !existingTitle || !existingSubtext || !existingForm) {
+      return;
+    }
+
+    contactPanel.insertAdjacentHTML(
+      "afterbegin",
+      '<h3 id="contactTitle" class="sr-only">Contact options</h3>'
+    );
+
+    closeButton.insertAdjacentHTML(
+      "afterend",
+      `
+        <div class="contact-view is-active" data-contact-view="chooser">
+          <h3>Choose a form</h3>
+          <p class="contact-subtext">
+            Pick the best way to connect with The Blessing CoHort.
+          </p>
+          <div class="contact-choice-grid">
+            <button class="contact-choice" type="button" data-contact-choice="contact">
+              <strong>General contact</strong>
+              <span>Prayer, partnership, giving, or a general question.</span>
+            </button>
+            <button class="contact-choice" type="button" data-contact-choice="newsletter">
+              <strong>Newsletter signup</strong>
+              <span>Just name and email for stories and updates.</span>
+            </button>
+          </div>
+        </div>
+      `
+    );
+
+    const chooserView = contactPanel.querySelector('[data-contact-view="chooser"]');
+
+    if (!chooserView) {
+      return;
+    }
+
+    const contactView = document.createElement("div");
+    contactView.className = "contact-view";
+    contactView.dataset.contactView = "contact";
+    contactView.hidden = true;
+
+    const contactBackButton = document.createElement("button");
+    contactBackButton.type = "button";
+    contactBackButton.className = "contact-back";
+    contactBackButton.setAttribute("data-contact-back", "");
+    contactBackButton.textContent = "Back to choices";
+
+    contactView.append(contactBackButton, existingTitle, existingSubtext, existingForm);
+    chooserView.insertAdjacentElement("afterend", contactView);
+
+    const newsletterView = document.createElement("div");
+    newsletterView.className = "contact-view";
+    newsletterView.dataset.contactView = "newsletter";
+    newsletterView.hidden = true;
+
+    const newsletterBackButton = document.createElement("button");
+    newsletterBackButton.type = "button";
+    newsletterBackButton.className = "contact-back";
+    newsletterBackButton.setAttribute("data-contact-back", "");
+    newsletterBackButton.textContent = "Back to choices";
+
+    const newsletterHeading = document.createElement("h3");
+    newsletterHeading.textContent = "Join the newsletter";
+
+    const newsletterSubtext = document.createElement("p");
+    newsletterSubtext.className = "contact-subtext";
+    newsletterSubtext.textContent =
+      "Get real stories, updates, and impact from our work in villages.";
+
+    const newsletterForm = document.createElement("form");
+    newsletterForm.className = "contact-form contact-form--newsletter";
+    newsletterForm.action = "https://api.web3forms.com/submit";
+    newsletterForm.method = "POST";
+    newsletterForm.id = "newsletterForm";
+    newsletterForm.setAttribute("data-web3form", "true");
+    newsletterForm.dataset.formKind = "newsletter";
+    newsletterForm.innerHTML = `
+      <input type="hidden" name="access_key" value="60d5f1a6-7142-4beb-9dc4-3bb8b80a0d52" />
+      <input type="hidden" name="botcheck" />
+      <input type="hidden" name="subject" value="Newsletter signup" />
+
+      <label>
+        Name
+        <input type="text" name="name" placeholder="Your name" required />
+      </label>
+
+      <label>
+        Email Address
+        <input
+          type="email"
+          name="email"
+          placeholder="you@example.com"
+          required
+        />
+      </label>
+
+      <button type="submit" class="submit-btn">Subscribe</button>
+      <p class="form-status" data-form-status aria-live="polite">
+        Thanks for subscribing. We will keep you posted.
+      </p>
+    `;
+
+    newsletterView.append(
+      newsletterBackButton,
+      newsletterHeading,
+      newsletterSubtext,
+      newsletterForm
+    );
+    contactView.insertAdjacentElement("afterend", newsletterView);
+
+    contactPanel.dataset.enhanced = "true";
+    contactChoiceButtons = contactPanel.querySelectorAll("[data-contact-choice]");
+    contactBackButtons = contactPanel.querySelectorAll("[data-contact-back]");
+    contactForms = contactPanel.querySelectorAll("[data-web3form]");
+    contactViews = contactPanel.querySelectorAll("[data-contact-view]");
+  };
+
+  setupContactModal();
+
+  const showContactView = (viewName) => {
+    if (!contactViews.length) {
+      return;
+    }
+
+    contactViews.forEach((view) => {
+      const isActive = view.dataset.contactView === viewName;
+      view.hidden = !isActive;
+      view.classList.toggle("is-active", isActive);
+    });
+  };
+
+  const resetContactForms = () => {
+    contactForms.forEach((contactForm) => {
+      contactForm.reset();
+      const status =
+        contactForm.querySelector("[data-form-status]") || contactForm.querySelector(".form-status");
+      if (status) {
+        status.classList.remove("is-visible");
+      }
+    });
+  };
 
   const lockBody = (locked) => {
     body.classList.toggle("is-locked", locked);
@@ -72,6 +228,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     contactModal.classList.remove("is-open");
+    showContactView("chooser");
+    resetContactForms();
     if (navPanel && navPanel.classList.contains("is-open")) {
       lockBody(true);
     } else {
@@ -128,6 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    showContactView("chooser");
     contactModal.classList.add("is-open");
     closeNav();
     lockBody(true);
@@ -135,6 +294,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   contactOpenButtons.forEach((button) => {
     button.addEventListener("click", openModal);
+  });
+
+  contactChoiceButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const targetView = button.dataset.contactChoice || "chooser";
+      showContactView(targetView);
+    });
+  });
+
+  contactBackButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      showContactView("chooser");
+    });
   });
 
   storyOpenButtons.forEach((button) => {
@@ -489,12 +661,15 @@ document.addEventListener("DOMContentLoaded", () => {
     requestSliderSync();
   });
 
-  if (form) {
-    form.addEventListener("submit", async (event) => {
+  contactForms.forEach((contactForm) => {
+    contactForm.addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      const submitButton = form.querySelector('button[type="submit"]');
-      const formData = new FormData(form);
+      const submitButton = contactForm.querySelector('button[type="submit"]');
+      const formStatus =
+        contactForm.querySelector("[data-form-status]") || contactForm.querySelector(".form-status");
+      const originalButtonText = submitButton ? submitButton.textContent : "";
+      const formData = new FormData(contactForm);
 
       if (submitButton) {
         submitButton.disabled = true;
@@ -502,7 +677,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        const response = await fetch(form.action, {
+        const response = await fetch(contactForm.action, {
           method: "POST",
           body: formData,
         });
@@ -512,7 +687,7 @@ document.addEventListener("DOMContentLoaded", () => {
           throw new Error("Submission failed");
         }
 
-        form.reset();
+        contactForm.reset();
         if (formStatus) {
           formStatus.classList.add("is-visible");
         }
@@ -528,11 +703,11 @@ document.addEventListener("DOMContentLoaded", () => {
       } finally {
         if (submitButton) {
           submitButton.disabled = false;
-          submitButton.textContent = "Send message";
+          submitButton.textContent = originalButtonText;
         }
       }
     });
-  }
+  });
 
   window.addEventListener("resize", () => {
     if (window.innerWidth > 860) {
