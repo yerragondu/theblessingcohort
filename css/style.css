@@ -2083,6 +2083,99 @@ button, input, select, textarea { font: inherit; }
 }
 
 /* ==============================================
+   GALLERY LIGHTBOX
+   ============================================== */
+.lightbox {
+  align-items: center;
+  display: none;
+  inset: 0;
+  justify-content: center;
+  position: fixed;
+  z-index: 9000;
+}
+.lightbox.is-open { display: flex; }
+
+.lightbox-backdrop {
+  background: rgba(0, 0, 0, .93);
+  inset: 0;
+  position: absolute;
+  z-index: 0;
+}
+
+.lightbox-img-wrap {
+  max-height: 88vh;
+  max-width: 88vw;
+  position: relative;
+  z-index: 2;
+}
+
+.lightbox-img {
+  border-radius: 12px;
+  display: block;
+  max-height: 88vh;
+  max-width: 88vw;
+  object-fit: contain;
+}
+
+.lightbox-close {
+  align-items: center;
+  background: rgba(255, 255, 255, .12);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  font-size: 18px;
+  height: 44px;
+  justify-content: center;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  transition: background .2s;
+  width: 44px;
+  z-index: 3;
+}
+.lightbox-close:hover { background: rgba(255, 255, 255, .28); }
+
+.lightbox-prev,
+.lightbox-next {
+  align-items: center;
+  background: rgba(255, 255, 255, .12);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  font-size: 22px;
+  height: 52px;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: background .2s, opacity .2s;
+  width: 52px;
+  z-index: 3;
+}
+.lightbox-prev { left: 20px; }
+.lightbox-next { right: 20px; }
+.lightbox-prev:hover,
+.lightbox-next:hover { background: rgba(255, 255, 255, .28); }
+.lightbox-prev:disabled,
+.lightbox-next:disabled { opacity: .25; cursor: default; }
+
+.lightbox-counter {
+  bottom: 24px;
+  color: rgba(255, 255, 255, .55);
+  font-size: 13px;
+  font-weight: 600;
+  left: 50%;
+  letter-spacing: .08em;
+  position: absolute;
+  transform: translateX(-50%);
+  z-index: 3;
+}
+
+/* ==============================================
    RESPONSIVE
    ============================================== */
 @media (max-width: 1024px) {
@@ -2148,12 +2241,28 @@ button, input, select, textarea { font: inherit; }
   .header-shell { border-radius: 18px; padding: 8px 12px; }
   .brand-tag { display: none; }
 
-  .hero        { padding: 120px 0 60px; }
+  /* Hero — remove forced full-screen height so content drives the height */
+  .hero        { min-height: auto; padding: 110px 0 52px; }
   .hero-wrap   { grid-template-columns: 1fr; }
   .hero-stack  { font-size: clamp(60px, 18vw, 140px); }
   .cta-slab    { padding: 32px 24px; }
   .page-hero   { padding: 28px 20px; border-radius: 20px; }
   .story-card  { padding: 24px; }
+
+  /* Section head — stack heading + lede vertically instead of side-by-side */
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+  .section-lede { max-width: 100%; }
+
+  /* Mission strip — hide connector lines, stack icon+label vertically per step */
+  .mission-strip-inner { justify-content: space-evenly; gap: 8px; }
+  .mission-conn        { display: none; }
+  .mission-step        { flex-direction: column; gap: 8px; text-align: center; flex-shrink: 1; min-width: 0; }
+  .mission-label       { font-size: 12px; }
 
   .aspects-grid { grid-template-columns: 1fr; }
   .aspect-card,

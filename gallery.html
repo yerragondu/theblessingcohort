@@ -507,7 +507,7 @@
       </div>
 
       <div class="footer-bottom">
-        <p>&copy; 2025 The Blessing CoHort &nbsp;&mdash;&nbsp; His Ministry. Our Stewardship.</p>
+        <p>&copy; 2026 The Blessing CoHort &nbsp;&mdash;&nbsp; His Ministry. Our Stewardship.</p>
       </div>
     </footer>
 
@@ -515,6 +515,75 @@
       <source src="assets/audio/site-theme.mp3" type="audio/mpeg" />
     </audio>
 
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
     <script src="js/main.js"></script>
+
+    <!-- ============================================================
+         LIGHTBOX
+         ============================================================ -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" aria-hidden="true">
+      <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+      <button class="lightbox-close" id="lightboxClose" aria-label="Close">&#x2715;</button>
+      <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous image">&#8592;</button>
+      <div class="lightbox-img-wrap">
+        <img class="lightbox-img" id="lightboxImg" src="" alt="" />
+      </div>
+      <button class="lightbox-next" id="lightboxNext" aria-label="Next image">&#8594;</button>
+      <span class="lightbox-counter" id="lightboxCounter"></span>
+    </div>
+
+    <script>
+    (function () {
+      var lb        = document.getElementById('lightbox');
+      var lbImg     = document.getElementById('lightboxImg');
+      var lbCounter = document.getElementById('lightboxCounter');
+      var lbPrev    = document.getElementById('lightboxPrev');
+      var lbNext    = document.getElementById('lightboxNext');
+
+      var images = [];   // { src, alt }
+      var current = 0;
+
+      /* Collect every preview image */
+      document.querySelectorAll('.gallery-preview-item img').forEach(function (img, i) {
+        images.push({ src: img.src, alt: img.alt });
+        img.parentElement.style.cursor = 'pointer';
+        img.parentElement.addEventListener('click', function () { open(i); });
+      });
+
+      function open(index) {
+        current = index;
+        lbImg.src = images[current].src;
+        lbImg.alt = images[current].alt;
+        lbCounter.textContent = (current + 1) + ' / ' + images.length;
+        lbPrev.disabled = current === 0;
+        lbNext.disabled = current === images.length - 1;
+        lb.classList.add('is-open');
+        lb.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function close() {
+        lb.classList.remove('is-open');
+        lb.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        lbImg.src = '';
+      }
+
+      function prev() { if (current > 0) open(current - 1); }
+      function next() { if (current < images.length - 1) open(current + 1); }
+
+      document.getElementById('lightboxClose').addEventListener('click', close);
+      document.getElementById('lightboxBackdrop').addEventListener('click', close);
+      lbPrev.addEventListener('click', prev);
+      lbNext.addEventListener('click', next);
+
+      document.addEventListener('keydown', function (e) {
+        if (!lb.classList.contains('is-open')) return;
+        if (e.key === 'Escape')      close();
+        if (e.key === 'ArrowLeft')   prev();
+        if (e.key === 'ArrowRight')  next();
+      });
+    })();
+    </script>
   </body>
 </html>
