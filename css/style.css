@@ -355,6 +355,10 @@ button, input, select, textarea { font: inherit; }
 .hero-actions {
   display: flex;
   align-items: center;
+  /* Centred so the buttons stay under the headline once they wrap to their own
+     lines on narrow screens — without it each wrapped line falls back to
+     flex-start and sits left of the centred text above it. */
+  justify-content: center;
   flex-wrap: wrap;
   gap: 14px;
   animation: riseWord .7s .8s cubic-bezier(.16,1,.3,1) both;
