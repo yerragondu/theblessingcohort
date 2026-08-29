@@ -46,18 +46,18 @@ document.addEventListener("DOMContentLoaded", () => {
       "afterend",
       `
         <div class="contact-view is-active" data-contact-view="chooser">
-          <h3>Choose a form</h3>
+          <h3>Stay connected</h3>
           <p class="contact-subtext">
-            Pick the best way to connect with The Blessing CoHort.
+            Choose how you'd like to connect with us.
           </p>
           <div class="contact-choice-grid">
             <button class="contact-choice" type="button" data-contact-choice="contact">
-              <strong>General contact</strong>
-              <span>Prayer, partnership, giving, or a general question.</span>
+              <strong>General Contact</strong>
+              <span>Prayer, partnership, questions, or getting involved with the work.</span>
             </button>
             <button class="contact-choice" type="button" data-contact-choice="newsletter">
-              <strong>Newsletter signup</strong>
-              <span>Just name and email for stories and updates.</span>
+              <strong>Newsletter Signup</strong>
+              <span>Just your name and email for monthly stories, updates, and prayer requests.</span>
             </button>
           </div>
         </div>
@@ -96,12 +96,12 @@ document.addEventListener("DOMContentLoaded", () => {
     newsletterBackButton.textContent = "Back to choices";
 
     const newsletterHeading = document.createElement("h3");
-    newsletterHeading.textContent = "Join the newsletter";
+    newsletterHeading.textContent = "Stay connected";
 
     const newsletterSubtext = document.createElement("p");
     newsletterSubtext.className = "contact-subtext";
     newsletterSubtext.textContent =
-      "Get real stories, updates, and impact from our work in villages.";
+      "Get monthly stories, updates from the field, prayer requests, and see how you can stand with the work.";
 
     const newsletterForm = document.createElement("form");
     newsletterForm.className = "contact-form contact-form--newsletter";
@@ -468,72 +468,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const countUpItems = document.querySelectorAll("[data-count-up]");
-  const animateCountUp = (element) => {
-    if (element.dataset.counted === "true") {
-      return;
-    }
-
-    const finalText = (element.dataset.countFinal || element.textContent || "").trim();
-    const match = finalText.match(/^([^0-9]*)(\d+)([^0-9]*)$/);
-
-    if (!match) {
-      element.dataset.counted = "true";
-      return;
-    }
-
-    const [, prefix, rawNumber, suffix] = match;
-    const targetValue = Number(rawNumber);
-    const duration = 1400;
-    const startTime = performance.now();
-
-    element.dataset.countFinal = finalText;
-    element.dataset.counted = "true";
-    element.textContent = `${prefix}0${suffix}`;
-
-    const tick = (now) => {
-      const progress = Math.min((now - startTime) / duration, 1);
-      const easedProgress = 1 - Math.pow(1 - progress, 3);
-      const currentValue = Math.round(targetValue * easedProgress);
-
-      element.textContent = `${prefix}${currentValue}${suffix}`;
-
-      if (progress < 1) {
-        window.requestAnimationFrame(tick);
-      } else {
-        element.textContent = finalText;
-      }
-    };
-
-    window.requestAnimationFrame(tick);
-  };
-
-  if ("IntersectionObserver" in window) {
-    const countObserver = new IntersectionObserver(
-      (entries, observer) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) {
-            return;
-          }
-
-          animateCountUp(entry.target);
-          observer.unobserve(entry.target);
-        });
-      },
-      {
-        threshold: 0.5,
-      }
-    );
-
-    countUpItems.forEach((item) => {
-      countObserver.observe(item);
-    });
-  } else {
-    countUpItems.forEach((item) => {
-      animateCountUp(item);
-    });
-  }
-
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", (event) => {
       const href = anchor.getAttribute("href");
@@ -548,6 +482,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
       event.preventDefault();
       target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  // FAQ rows open on hover as a preview, and a click pins one open so it stays
+  // put once the pointer moves away. The native summary toggle is taken over so
+  // a click always means "pin/unpin" rather than inverting whatever state the
+  // hover happened to leave behind. Touch and keyboard both route through the
+  // same click handler, so they still toggle normally.
+  document.querySelectorAll(".faq-item").forEach((item) => {
+    const summary = item.querySelector("summary");
+    if (!summary) {
+      return;
+    }
+
+    let openTimer = null;
+    const isPinned = () => item.dataset.pinned === "true";
+
+    // Anything open in the markup counts as pinned, so it survives a first hover.
+    if (item.open) {
+      item.dataset.pinned = "true";
+    }
+
+    summary.addEventListener("click", (event) => {
+      event.preventDefault();
+      window.clearTimeout(openTimer);
+
+      const pinned = isPinned();
+      item.dataset.pinned = pinned ? "false" : "true";
+      item.open = !pinned;
+    });
+
+    item.addEventListener("mouseenter", () => {
+      // Brief delay so sweeping down the list doesn't flick every row open.
+      openTimer = window.setTimeout(() => {
+        item.open = true;
+      }, 90);
+    });
+
+    item.addEventListener("mouseleave", () => {
+      window.clearTimeout(openTimer);
+      if (!isPinned()) {
+        item.open = false;
+      }
     });
   });
 
@@ -615,50 +592,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     track.addEventListener("scroll", syncIndexFromScroll, { passive: true });
     syncIndexFromScroll();
-  });
-
-  document.querySelectorAll(".timeline-grid").forEach((section) => {
-    const timelineCards = section.querySelector(".timeline-cards");
-    const sliderTrack = section.querySelector(".timeline-slider [data-slider-track]");
-
-    if (!timelineCards || !sliderTrack) {
-      return;
-    }
-
-    let syncFrame = null;
-
-    const syncTimelineSlider = () => {
-      syncFrame = null;
-
-      const timelineMaxScroll = Math.max(
-        timelineCards.scrollHeight - timelineCards.clientHeight,
-        0
-      );
-      const sliderMaxScroll = Math.max(
-        sliderTrack.scrollWidth - sliderTrack.clientWidth,
-        0
-      );
-
-      if (timelineMaxScroll === 0 || sliderMaxScroll === 0) {
-        sliderTrack.scrollLeft = 0;
-        return;
-      }
-
-      const progress = timelineCards.scrollTop / timelineMaxScroll;
-      sliderTrack.scrollLeft = progress * sliderMaxScroll;
-    };
-
-    const requestSliderSync = () => {
-      if (syncFrame !== null) {
-        return;
-      }
-
-      syncFrame = window.requestAnimationFrame(syncTimelineSlider);
-    };
-
-    timelineCards.addEventListener("scroll", requestSliderSync, { passive: true });
-    window.addEventListener("resize", requestSliderSync);
-    requestSliderSync();
   });
 
   contactForms.forEach((contactForm) => {
