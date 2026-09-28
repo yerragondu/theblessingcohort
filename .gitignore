@@ -1,0 +1,4 @@
+
+# Hero videos live in Cloudflare R2 (media.theblessingcohort.org/video/),
+# not in the repo — Pages caps assets at 25 MiB and these are 40-100 MB.
+assets/video/
