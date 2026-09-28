@@ -491,6 +491,38 @@ document.addEventListener("DOMContentLoaded", () => {
   // reopen any answer the moment the pointer crossed it, so a reader could
   // never actually close one.
 
+  // Background videos autoplay and loop forever, which means an off-screen one
+  // keeps decoding every frame while the visitor reads somewhere else — on the
+  // Get Involved page that had the hero and the closing slab decoding at once.
+  // Play only what is actually on screen.
+  const backgroundVideos = document.querySelectorAll(
+    ".hero-video, .join-dark-hero-video, .cta-closing-video"
+  );
+  if (backgroundVideos.length && "IntersectionObserver" in window) {
+    const videoObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target;
+          if (entry.isIntersecting) {
+            // play() rejects if the browser blocks autoplay; nothing to recover.
+            const played = video.play();
+            if (played && typeof played.catch === "function") {
+              played.catch(() => {});
+            }
+          } else if (!video.paused) {
+            video.pause();
+          }
+        });
+      },
+      // Generous margin so a deferred video starts fetching well before it
+      // scrolls in — these files are large and there is no poster behind them,
+      // so arriving at an empty panel is the thing to avoid.
+      { rootMargin: "800px 0px" }
+    );
+
+    backgroundVideos.forEach((video) => videoObserver.observe(video));
+  }
+
   document.querySelectorAll("[data-slider-track]").forEach((track) => {
     const container = track.closest(".giving-slider");
     if (!container) {
