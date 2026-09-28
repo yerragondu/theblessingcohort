@@ -485,48 +485,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // FAQ rows open on hover as a preview, and a click pins one open so it stays
-  // put once the pointer moves away. The native summary toggle is taken over so
-  // a click always means "pin/unpin" rather than inverting whatever state the
-  // hover happened to leave behind. Touch and keyboard both route through the
-  // same click handler, so they still toggle normally.
-  document.querySelectorAll(".faq-item").forEach((item) => {
-    const summary = item.querySelector("summary");
-    if (!summary) {
-      return;
-    }
-
-    let openTimer = null;
-    const isPinned = () => item.dataset.pinned === "true";
-
-    // Anything open in the markup counts as pinned, so it survives a first hover.
-    if (item.open) {
-      item.dataset.pinned = "true";
-    }
-
-    summary.addEventListener("click", (event) => {
-      event.preventDefault();
-      window.clearTimeout(openTimer);
-
-      const pinned = isPinned();
-      item.dataset.pinned = pinned ? "false" : "true";
-      item.open = !pinned;
-    });
-
-    item.addEventListener("mouseenter", () => {
-      // Brief delay so sweeping down the list doesn't flick every row open.
-      openTimer = window.setTimeout(() => {
-        item.open = true;
-      }, 90);
-    });
-
-    item.addEventListener("mouseleave", () => {
-      window.clearTimeout(openTimer);
-      if (!isPinned()) {
-        item.open = false;
-      }
-    });
-  });
+  // The FAQ rows carry `open` in the markup and toggle natively from there —
+  // no script. The hover-to-expand behaviour that used to live here was removed
+  // deliberately: with every row open by default, a mouseenter handler would
+  // reopen any answer the moment the pointer crossed it, so a reader could
+  // never actually close one.
 
   document.querySelectorAll("[data-slider-track]").forEach((track) => {
     const container = track.closest(".giving-slider");

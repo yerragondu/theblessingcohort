@@ -743,7 +743,20 @@ button, input, select, textarea { font: inherit; }
   pointer-events: none;
   position: absolute;
 }
-.cta-slab--closing > * { position: relative; z-index: 1; }
+.cta-slab--closing::before { z-index: 1; }
+.cta-slab--closing > * { position: relative; z-index: 2; }
+
+/* Background footage, beneath the grade. The slab already clips to its radius
+   via overflow:hidden, so the video takes the panel's rounded corners. */
+.cta-slab--closing > .cta-closing-video {
+  height: 100%;
+  inset: 0;
+  object-fit: cover;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  z-index: 0;
+}
 
 /* Ornament on the sentence's pivot, between the setup and the turn. */
 .cta-rule {
@@ -756,13 +769,24 @@ button, input, select, textarea { font: inherit; }
 }
 /* The sentence has a setup and a turn; the two halves are set apart rather than
    run together as one flat block. Balanced so neither breaks to an orphan. */
-.cta-slab--closing .cta-copy h2 { max-width: 780px; }
+.cta-slab--closing .cta-copy h2 { max-width: 900px; }
 .cta-lead,
 .cta-turn { display: block; text-wrap: balance; }
 .cta-lead {
   color: rgba(255, 255, 255, .42);
   font-size: .74em;
   letter-spacing: -.01em;
+}
+/* The turn is set in the display face — the page opens on a Bebas hero, so its
+   last word answers in the same voice. Weight 400 because Bebas ships one
+   weight; asking for 700 would only get a synthesised bold. Positive tracking
+   because the h2's -.02em is meant for Inter and closes Bebas up too tightly. */
+.cta-slab--closing .cta-turn {
+  font-family: var(--display);
+  font-size: clamp(34px, 4.6vw, 58px);
+  font-weight: 400;
+  letter-spacing: .022em;
+  line-height: .98;
 }
 .cta-actions { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
 
@@ -1984,4 +2008,134 @@ button, input, select, textarea { font: inherit; }
   .story-panel    { padding: 28px; }
   .gallery-preview-grid { grid-auto-rows: 150px; grid-template-columns: repeat(2, 1fr); }
   .join-section .wrap { max-width: 100%; padding: 0 24px; }
+}
+
+/* ==============================================
+   FINISH LAYER — light & motion
+   Appended last on purpose: several rules re-declare `background` on
+   components defined above, and source order is what lets them win.
+   ============================================== */
+:root {
+  /* Film grain tile, opacity baked into the rect so it can sit as a plain
+     background layer over any dark surface. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.14'/%3E%3C/svg%3E");
+}
+
+/* Brand details */
+::selection { background: var(--purple); color: #fff; }
+html { scrollbar-color: #c9c9d2 transparent; }
+::-webkit-scrollbar { width: 11px; }
+::-webkit-scrollbar-thumb { background: #c9c9d2; border-radius: 99px; border: 3px solid var(--white); }
+::-webkit-scrollbar-thumb:hover { background: var(--purple); }
+
+/* Gradient type breathes instead of sitting printed on the page. Applied here
+   because the component blocks above set `background` shorthand, which would
+   reset background-size if this came first. */
+@keyframes gradientPan {
+  from { background-position: 0% 50%; }
+  to   { background-position: 100% 50%; }
+}
+.g-text, .hero-accent, .cta-accent, .join-grad-word {
+  background-size: 220% 220%;
+  animation: gradientPan 7s ease-in-out infinite alternate;
+}
+/* The small gradient ornaments shimmer on the same clock. */
+.statement-mark, .cta-rule {
+  background-size: 300% 100%;
+  animation: gradientPan 6s ease-in-out infinite alternate;
+}
+
+/* Cinematic grade on dark footage: brand-coloured light from the corners plus
+   grain, so the video heroes read graded rather than dimmed. */
+.hero-overlay {
+  background:
+    var(--grain),
+    radial-gradient(90% 70% at 12% 0%, rgba(124, 58, 237, .30), transparent 62%),
+    radial-gradient(80% 70% at 90% 100%, rgba(13, 148, 136, .22), transparent 62%),
+    linear-gradient(180deg, rgba(0, 0, 0, .44), rgba(0, 0, 0, .56));
+}
+.join-dark-hero-overlay {
+  background:
+    var(--grain),
+    radial-gradient(80% 80% at 10% 6%, rgba(124, 58, 237, .30), transparent 62%),
+    radial-gradient(70% 80% at 90% 94%, rgba(13, 148, 136, .24), transparent 62%),
+    rgba(0, 0, 0, .56);
+}
+/* Same grade + grain for the dark closing slab. The trailing flat layer is the
+   base the corner washes sit on: the slab now carries background footage, and
+   without it the copy loses contrast wherever the video runs bright. Matched to
+   the video heroes' .56 so all three dark surfaces grade alike. */
+.cta-slab--closing::before {
+  background:
+    var(--grain),
+    radial-gradient(58% 118% at 50% -12%, rgba(124, 58, 237, .30), transparent 68%),
+    radial-gradient(48% 100% at 50% 112%, rgba(13, 148, 136, .22), transparent 70%),
+    rgba(0, 0, 0, .64);
+}
+/* The setup line sits at .42 white, which held against a flat panel but goes
+   illegible over moving footage. Lifted only where there is video behind it. */
+.cta-slab--closing:has(.cta-closing-video) .cta-lead { color: rgba(255, 255, 255, .62); }
+
+/* Footer: gradient hairline instead of the flat white rule, and a faint aurora
+   with the same grain so it belongs to the same family as the heroes. */
+.footer { border-top: 0; overflow: hidden; position: relative; }
+.footer::before {
+  background: var(--grad);
+  content: '';
+  height: 2px;
+  left: 0; right: 0; top: 0;
+  position: absolute;
+}
+.footer::after {
+  background:
+    var(--grain),
+    radial-gradient(60% 90% at 85% 0%, rgba(124, 58, 237, .13), transparent 62%),
+    radial-gradient(50% 80% at 8% 100%, rgba(37, 99, 235, .10), transparent 62%);
+  content: '';
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+/* Buttons: the gradient slides under the cursor and a light sweep crosses. */
+.btn { overflow: hidden; position: relative; }
+/* 135%, not larger — a wider window would crop the resting button to the
+   purple/blue end of the ramp and lose the four-hue brand identity. */
+.btn-gradient { background-size: 135% 135%; }
+.btn-gradient:hover { background-position: 100% 50%; }
+.btn-gradient::after {
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, .38), transparent);
+  bottom: 0; top: 0; left: -45%;
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  transform: skewX(-18deg);
+  transition: left .55s ease;
+  width: 40%;
+}
+.btn-gradient:hover::after { left: 125%; }
+
+/* Contact bubble sends out a quiet ring so it reads alive, not parked. */
+@keyframes bubblePulse {
+  from { box-shadow: 0 0 0 0 rgba(124, 58, 237, .40); }
+  60%, to { box-shadow: 0 0 0 16px rgba(124, 58, 237, 0); }
+}
+.contact-bubble::after {
+  animation: bubblePulse 3.2s ease-out infinite;
+  border-radius: inherit;
+  content: '';
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+/* Motion is decoration here — honour the OS setting. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .g-text, .hero-accent, .cta-accent, .join-grad-word,
+  .statement-mark, .cta-rule,
+  .contact-bubble::after,
+  .hero-stack span, .hero-actions { animation: none; }
+  .reveal { filter: none; opacity: 1; transform: none; transition: none; }
+  .btn-gradient::after { display: none; }
 }
